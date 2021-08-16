@@ -4,6 +4,9 @@ on:
     # JSTで 毎週日曜 00:30 に設定
     # 5番目に0（日曜日）を指定
     - cron: 30 14 * * 0
+  repository_dispatch:
+    types: [check-link]
+  workflow_dispatch:
 
 jobs:
   run:
