@@ -1,4 +1,5 @@
 const puppeteer = require('puppeteer');
+const fs = require('fs');
 
 (async () => {
   const URL = `https://www.amazon.co.jp/gp/goldbox`;
@@ -18,9 +19,6 @@ const puppeteer = require('puppeteer');
   });
   const items = await page.$$('[data-testid="deal-card"]');
 
-  console.log('Dimensions:', dimensions);
-  console.log('タイトル:', dimensions.title);
-
   const datas = [];
   for (const item of items) {
     const hrefTarget = await item.$('.a-link-normal');
@@ -30,7 +28,6 @@ const puppeteer = require('puppeteer');
     const asidePriceTarget = await item.$('.a-size-small.a-color-secondary');
     const imageTarget = await item.$('.a-image-container > img');
     // const label = await item.evaluate(node => node.getAttribute('aria-label'));
-    console.log({asin});
 
     var data = {
       href: href,
@@ -46,5 +43,17 @@ const puppeteer = require('puppeteer');
   }
   console.log({datas});
 
+  const today = new Date();
+  const y = today.getFullYear();
+  const m = ('00' + (today.getMonth()+1)).slice(-2);
+  const d = ('00' + today.getDate()).slice(-2);
+
+  try {
+    fs.writeFile(`docs/${y}${m}${d}.json`, JSON.stringify(datas, null, '  '), (err)=>{
+      if(err) console.log(`error!::${err}`);
+    });
+  } catch (err) {
+    console.error(err)
+  }
   await browser.close();
 })();
