@@ -8,16 +8,22 @@ const fs = require('fs');
   const page = await browser.newPage();
   page.setViewport({width: 1440, height: 1200})
   await page.goto(URL); //URLにアクセス
-  // Get the "viewport" of the page, as reported by the page.
-  const dimensions = await page.evaluate(() => {
-    return {
-      width: document.documentElement.clientWidth,
-      height: document.documentElement.clientHeight,
-      title: document.title,
-      deviceScaleFactor: window.devicePixelRatio
-    };
-  });
+
   const items = await page.$$('[data-testid="deal-card"]');
+
+  if (items.length === 0) {
+    await browser.close();
+    console.log({items});
+    return;
+  }
+
+  const today = new Date();
+  const y = today.getFullYear();
+  const m = ('00' + (today.getMonth()+1)).slice(-2);
+  const d = ('00' + today.getDate()).slice(-2);
+  const h = ('00' + today.getHours()).slice(-2);
+  const min = ('00' + today.getMinutes()).slice(-2);
+  const now = `${y}-${m}-${d}-${h}${min}`
 
   const datas = [];
   for (const item of items) {
@@ -31,6 +37,7 @@ const fs = require('fs');
 
     var data = {
       href: href,
+      date: date,
       asin: asin ? asin[1]: null,
       price: priceTarget ? await (await priceTarget.getProperty('textContent')).jsonValue() : null,
       aside_price: asidePriceTarget ? await (await asidePriceTarget.getProperty('textContent')).jsonValue() : null,
@@ -41,15 +48,16 @@ const fs = require('fs');
     };
     datas.push(data);
   }
-  console.log({datas});
-
-  const today = new Date();
-  const y = today.getFullYear();
-  const m = ('00' + (today.getMonth()+1)).slice(-2);
-  const d = ('00' + today.getDate()).slice(-2);
+  // console.log({datas});
 
   try {
-    fs.writeFile(`docs/${y}${m}${d}.json`, JSON.stringify(datas, null, '  '), (err)=>{
+    fs.writeFile(`docs/posts/${now}.json`, JSON.stringify(datas, null, '  '), (err)=>{
+      if(err) console.log(`error!::${err}`);
+    });
+    const updated = fs.readFileSync('docs/updated.json', 'utf-8');
+    const updated_json = JSON.parse(updated);
+    updated_json.push(now);
+    fs.writeFile(`docs/updated.json`, JSON.stringify(updated_json, null, '  '), (err)=>{
       if(err) console.log(`error!::${err}`);
     });
   } catch (err) {
