@@ -15,7 +15,7 @@ jobs:
       REPO: https://${{github.actor}}:${{secrets.GITHUB_TOKEN}}@github.com/${{github.repository}}.git
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@main
+        uses: actions/checkout@v2
         with:
           ref: ${{github.event.pull_request.head.ref}}
       - name: Use Yarn Cache
