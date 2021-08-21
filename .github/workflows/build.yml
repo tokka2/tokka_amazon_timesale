@@ -32,4 +32,4 @@ jobs:
           git config --global user.email "neg@ipon.biz"
           git config --global user.name "negipon"
           git add .
-          git commit -m 'modify' && git push ${REPO} HEAD:${{github.event.pull_request.head.ref}} || true
+          git commit -m 'modify' && git push
