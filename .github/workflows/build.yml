@@ -11,9 +11,13 @@ jobs:
   run:
     name: Yarn
     runs-on: ubuntu-latest
+    env:
+      REPO: https://${{github.actor}}:${{secrets.GITHUB_TOKEN}}@github.com/${{github.repository}}.git
     steps:
       - name: Checkout Repo
         uses: actions/checkout@main
+        with:
+          ref: ${{github.event.pull_request.head.ref}}
       - name: Use Yarn Cache
         uses: actions/cache@v2
         with:
@@ -23,3 +27,9 @@ jobs:
         run: yarn
       - name: Run build
         run: node index.js
+      - name: Commit and Push
+        run: |
+          git config --global user.email "neg@ipon.biz"
+          git config --global user.name "negipon"
+          git add .
+          git commit -m 'modify && git push ${REPO} HEAD:${{github.event.pull_request.head.ref}} || true
