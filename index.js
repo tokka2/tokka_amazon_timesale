@@ -37,7 +37,7 @@ const fs = require('fs');
 
     var data = {
       href: href,
-      date: date,
+      date: now,
       asin: asin ? asin[1]: null,
       price: priceTarget ? await (await priceTarget.getProperty('textContent')).jsonValue() : null,
       aside_price: asidePriceTarget ? await (await asidePriceTarget.getProperty('textContent')).jsonValue() : null,
