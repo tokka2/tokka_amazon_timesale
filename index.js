@@ -2,7 +2,7 @@ const puppeteer = require('puppeteer');
 const fs = require('fs');
 
 (async () => {
-  const URL = `https://www.amazon.co.jp/gp/goldbox`;
+  const URL = `https://www.amazon.co.jp/gp/goldbox?language=ja_JP`;
 
   const browser = await puppeteer.launch({});
   const page = await browser.newPage();
@@ -17,7 +17,7 @@ const fs = require('fs');
     return;
   }
 
-  const today = new Date();
+  const today = new Date().toLocaleString({ timeZone: 'Asia/Tokyo' });
   const y = today.getFullYear();
   const m = ('00' + (today.getMonth()+1)).slice(-2);
   const d = ('00' + today.getDate()).slice(-2);
