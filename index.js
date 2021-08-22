@@ -17,7 +17,7 @@ const fs = require('fs');
     return;
   }
 
-  const today = new Date().toLocaleString({ timeZone: 'Asia/Tokyo' });
+  const today = new Date(new Date().toLocaleString({ timeZone: 'Asia/Tokyo' }));
   const y = today.getFullYear();
   const m = ('00' + (today.getMonth()+1)).slice(-2);
   const d = ('00' + today.getDate()).slice(-2);
