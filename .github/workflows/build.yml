@@ -1,8 +1,8 @@
 name: Check Amazon Time Sale
 on:
   schedule:
-    # JSTで 毎日 04:30 に設定
-    - cron: 30 18 * * *
+    # JSTで 毎日 09:30 に設定
+    - cron: 30 0 * * *
   repository_dispatch:
     types: [check-link]
   workflow_dispatch:
