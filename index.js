@@ -1,6 +1,10 @@
 const puppeteer = require('puppeteer');
 const fs = require('fs');
 
+async function sleep(delay) {
+  return new Promise(resolve => setTimeout(resolve, delay));
+}
+
 (async () => {
   const URL = `https://www.amazon.co.jp/gp/goldbox?language=ja_JP`;
 
@@ -8,8 +12,9 @@ const fs = require('fs');
   const page = await browser.newPage();
   page.setViewport({width: 1440, height: 1200})
   await page.goto(URL); //URLにアクセス
+  await sleep(1000);
 
-  const items = await page.$$('[data-testid="deal-card"]');
+  const items = await page.$$('[data-testid="deal-card"], .dealTile');
 
   if (items.length === 0) {
     await browser.close();
@@ -30,10 +35,11 @@ const fs = require('fs');
     const hrefTarget = await item.$('.a-link-normal');
     const href = `${await (await hrefTarget.getProperty('href')).jsonValue()}&tag=tokkajohotsu-22`;
     const asin = href.match(/[^0-9A-Z]([0-9A-Z]{10})([^0-9A-Z]|$)/);
-    const priceTarget = await item.$('.a-price-whole');
+    const priceTarget = await item.$('.a-price-whole, .dealPriceText');
     const asidePriceTarget = await item.$('.a-size-small.a-color-secondary');
-    const imageTarget = await item.$('.a-image-container > img');
-    // const label = await item.evaluate(node => node.getAttribute('aria-label'));
+    const imageTarget = await item.$('.a-image-container > img, [role="img"]');
+    const label = await item.evaluate(node => node.getAttribute('aria-label'));
+    const textContent = await (await item.getProperty('textContent')).jsonValue();
 
     var data = {
       href: href,
@@ -42,8 +48,8 @@ const fs = require('fs');
       price: priceTarget ? await (await priceTarget.getProperty('textContent')).jsonValue() : null,
       aside_price: asidePriceTarget ? await (await asidePriceTarget.getProperty('textContent')).jsonValue() : null,
       image: imageTarget ? await (await imageTarget.getProperty('src')).jsonValue() : null,
-      label: (await item.evaluate(node => node.getAttribute('aria-label'))).replace('セール: ', ''),
-      textContent: await (await item.getProperty('textContent')).jsonValue(),
+      label: label ? label.replace('セール: ', '') : null,
+      textContent: textContent ? textContent.replace(/\n|\s+/g, '') : null,
       // innerHTML: await (await item.getProperty('innerHTML')).jsonValue()
     };
     datas.push(data);
