@@ -40,12 +40,13 @@ async function sleep(delay) {
     const imageTarget = await item.$('.a-image-container > img, [role="img"]');
     const label = await item.evaluate(node => node.getAttribute('aria-label'));
     const textContent = await (await item.getProperty('textContent')).jsonValue();
+    const price = priceTarget ? await (await priceTarget.getProperty('textContent')).jsonValue() : null;
 
     var data = {
       href: href,
       date: now,
       asin: asin ? asin[1]: null,
-      price: priceTarget ? await (await priceTarget.getProperty('textContent')).jsonValue() : null,
+      price: price ? price.replace(/¥/g, '') : null,
       aside_price: asidePriceTarget ? await (await asidePriceTarget.getProperty('textContent')).jsonValue() : null,
       image: imageTarget ? await (await imageTarget.getProperty('src')).jsonValue() : null,
       label: label ? label.replace('セール: ', '') : null,
