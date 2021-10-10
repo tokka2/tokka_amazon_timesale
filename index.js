@@ -63,7 +63,12 @@ async function sleep(delay) {
     });
     const updated = fs.readFileSync('docs/updated.json', 'utf-8');
     const updated_json = JSON.parse(updated);
-    updated_json.push(now);
+
+    updated_json.push({
+      date: now,
+      title: datas[0].label,
+      image: datas[0].image
+    });
     fs.writeFile(`docs/updated.json`, JSON.stringify(updated_json, null, '  '), (err)=>{
       if(err) console.log(`error!::${err}`);
     });
