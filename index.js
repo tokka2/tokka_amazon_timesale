@@ -50,7 +50,7 @@ async function sleep(delay) {
       aside_price: asidePriceTarget ? await (await asidePriceTarget.getProperty('textContent')).jsonValue() : null,
       image: imageTarget ? await (await imageTarget.getProperty('src')).jsonValue() : null,
       label: label ? label.replace('セール: ', '') : null,
-      textContent: textContent ? textContent.replace(/\n|\s+/g, '') : null,
+      textContent: textContent ? textContent.replace(/\n|\s+/g, ' ') : null,
       // innerHTML: await (await item.getProperty('innerHTML')).jsonValue()
     };
     datas.push(data);
