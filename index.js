@@ -67,7 +67,8 @@ async function sleep(delay) {
     updated_json.push({
       date: now,
       title: datas[0].label,
-      image: datas[0].image
+      image: datas[0].image,
+      content: datas[0].textContent
     });
     fs.writeFile(`docs/updated.json`, JSON.stringify(updated_json, null, '  '), (err)=>{
       if(err) console.log(`error!::${err}`);
