@@ -30,7 +30,7 @@ jobs:
         run: node index.js
       - name: Commit and Push
         run: |
-          git config --global user.email "neg@ipon.biz"
-          git config --global user.name "negipon"
+          git config --global user.email "tokka@ipon.biz"
+          git config --global user.name "tokka2"
           git add .
           git commit -m 'Add sale item' && git push
